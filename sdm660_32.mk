@@ -1,8 +1,24 @@
-DEVICE_PACKAGE_OVERLAYS := device/qcom/sdm660_32/overlay
+TARGET_USES_AOSP := true
+TARGET_USES_QCOM_BSP := false
+
+ifeq ($(TARGET_USES_AOSP),true)
+  TARGET_ENABLE_QC_AV_ENHANCEMENTS := false
+  TARGET_USES_QTIC := false
+else
+  DEVICE_PACKAGE_OVERLAYS := device/qcom/sdm660_32/overlay
+  TARGET_ENABLE_QC_AV_ENHANCEMENTS := true
+  TARGET_USES_QTIC := true
+endif
+
 TARGET_KERNEL_VERSION := 4.4
 BOARD_FRP_PARTITION_NAME := frp
-BOARD_HAVE_QCOM_FM := true
-TARGET_ENABLE_QC_AV_ENHANCEMENTS := true
+BOARD_HAVE_QCOM_FM := false
+TARGET_USES_NQ_NFC := false
+
+ifeq ($(TARGET_USES_NQ_NFC),true)
+# Flag to enable and support NQ3XX chipsets
+NQ3XX_PRESENT := true
+endif
 
 #QTIC flag
 -include $(QCPATH)/common/config/qtic-config.mk
@@ -23,6 +39,7 @@ $(call inherit-product, device/qcom/common/common.mk)
 PRODUCT_NAME := sdm660_32
 PRODUCT_DEVICE := sdm660_32
 PRODUCT_BRAND := Android
+PRODUCT_MODEL := sdm660 for arm64
 
 # default is nosdcard, S/W button enabled in resource
 PRODUCT_CHARACTERISTICS := nosdcard
@@ -36,20 +53,20 @@ ifneq (,$(strip $(wildcard $(PRODUCT_RENDERING_ENGINE_REVLIB))))
 endif
 
 # Enable features in video HAL that can compile only on this platform
-TARGET_USES_MEDIA_EXTENSIONS := true
+TARGET_USES_MEDIA_EXTENSIONS := false
 
 # WLAN chipset
 WLAN_CHIPSET := qca_cld3
 
 #Android EGL implementation
 PRODUCT_PACKAGES += libGLES_android
-PRODUCT_BOOT_JARS += tcmiface
-PRODUCT_BOOT_JARS += telephony-ext
+#PRODUCT_BOOT_JARS += tcmiface
+#PRODUCT_BOOT_JARS += telephony-ext
 
 PRODUCT_PACKAGES += telephony-ext
 
 ifneq ($(strip $(QCPATH)),)
-PRODUCT_BOOT_JARS += WfdCommon
+#PRODUCT_BOOT_JARS += WfdCommon
 #Android oem shutdown hook
 PRODUCT_BOOT_JARS += oem-services
 endif
@@ -57,6 +74,10 @@ endif
 ifeq ($(strip $(BOARD_HAVE_QCOM_FM)),true)
 PRODUCT_BOOT_JARS += qcom.fmradio
 endif #BOARD_HAVE_QCOM_FM
+
+# add vendor manifest file
+PRODUCT_COPY_FILES += \
+    device/qcom/sdm660_32/vintf.xml:$(TARGET_COPY_OUT_VENDOR)/manifest.xml
 
 # Audio configuration file
 -include $(TOPDIR)hardware/qcom/audio/configs/sdm660/sdm660.mk
@@ -86,6 +107,16 @@ PRODUCT_PACKAGES += \
     antradio_app \
     libvolumelistener
 
+# Gralloc
+PRODUCT_PACKAGES += \
+    android.hardware.graphics.allocator@2.0-impl \
+    android.hardware.graphics.allocator@2.0-service \
+    android.hardware.graphics.mapper@2.0-impl
+
+# HW Composer
+PRODUCT_PACKAGES += \
+    android.hardware.graphics.composer@2.1-impl \
+    android.hardware.graphics.composer@2.1-service
 
 # Sensor features
 PRODUCT_COPY_FILES += \
@@ -117,9 +148,9 @@ PRODUCT_PACKAGES += \
     fs_config_files
 
 # Add the overlay path
-PRODUCT_PACKAGE_OVERLAYS := $(QCPATH)/qrdplus/Extension/res \
-        $(QCPATH)/qrdplus/globalization/multi-language/res-overlay \
-        $(PRODUCT_PACKAGE_OVERLAYS)
+#PRODUCT_PACKAGE_OVERLAYS := $(QCPATH)/qrdplus/Extension/res \
+#       $(QCPATH)/qrdplus/globalization/multi-language/res-overlay \
+#      $(PRODUCT_PACKAGE_OVERLAYS)
 
 # Enable logdumpd service only for non-perf bootimage
 ifeq ($(findstring perf,$(KERNEL_DEFCONFIG)),)

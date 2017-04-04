@@ -4,22 +4,32 @@
 #
 
 TARGET_BOARD_PLATFORM := sdm660
-TARGET_BOOTLOADER_BOARD_NAME := sdm660
 TARGET_BOARD_SUFFIX := _32
+TARGET_BOOTLOADER_BOARD_NAME :=sdm660
 
-ifeq ($(TARGET_ARCH),)
-TARGET_ARCH := arm
+TARGET_ARCH := arm64
+TARGET_ARCH_VARIANT := armv8-a
+TARGET_CPU_ABI := arm64-v8a
+TARGET_CPU_ABI2 :=
+TARGET_CPU_VARIANT := generic
+
+TARGET_2ND_ARCH := arm
+TARGET_2ND_ARCH_VARIANT := armv7-a-neon
+TARGET_2ND_CPU_ABI := armeabi-v7a
+TARGET_2ND_CPU_ABI2 := armeabi
+TARGET_2ND_CPU_VARIANT := cortex-a53
+
+ifeq ($(TARGET_USES_AOSP), true)
+   TARGET_HW_DISK_ENCRYPTION := false
+else
+   # SDClang configuration
+   SDCLANG := true
+   #Enable HW based full disk encryption
+   TARGET_HW_DISK_ENCRYPTION := true
 endif
-TARGET_ARCH_VARIANT := armv7-a-neon
-TARGET_CPU_ABI  := armeabi-v7a
-TARGET_CPU_ABI2 := armeabi
-TARGET_CPU_VARIANT := cortex-a53
-
-# SDClang configuration
-SDCLANG := true
 
 TARGET_NO_BOOTLOADER := false
-BOOTLOADER_GCC_VERSION := arm-eabi-4.8
+#BOOTLOADER_GCC_VERSION := arm-eabi-4.8
 TARGET_USES_UEFI := true
 TARGET_NO_KERNEL := false
 -include $(QCPATH)/common/sdm660_32/BoardConfigVendor.mk
@@ -47,7 +57,10 @@ AB_OTA_PARTITIONS ?= boot system
 BOARD_BUILD_SYSTEM_ROOT_IMAGE := true
 TARGET_NO_RECOVERY := true
 BOARD_USES_RECOVERY_AS_BOOT := true
-TARGET_RECOVERY_UPDATER_LIBS += librecovery_updater_msm
+
+ifneq ($(AB_OTA_UPDATER),true)
+   TARGET_RECOVERY_UPDATER_LIBS += librecovery_updater_msm
+endif
 
 BOARD_SYSTEMIMAGE_PARTITION_SIZE := 3221225472
 BOARD_USERDATAIMAGE_PARTITION_SIZE := 48318382080
@@ -60,7 +73,11 @@ BOARD_CHARGER_ENABLE_SUSPEND := true
 
 TARGET_USES_ION := true
 TARGET_USES_NEW_ION_API :=true
-TARGET_USES_QCOM_BSP := true
+#TARGET_USES_QCOM_BSP :=true
+
+#Gralloc h/w specif flags
+TARGET_USES_HWC2 := true
+TARGET_USES_GRALLOC1 := true
 
 ifeq ($(BOARD_KERNEL_CMDLINE),)
 ifeq ($(TARGET_KERNEL_VERSION),4.4)
@@ -68,7 +85,7 @@ ifeq ($(TARGET_KERNEL_VERSION),4.4)
 else
      BOARD_KERNEL_CMDLINE += console=ttyHSL0,115200,n8 androidboot.console=ttyHSL0 earlycon=msm_hsl_uart,0xc1b0000
 endif
-BOARD_KERNEL_CMDLINE += androidboot.hardware=qcom user_debug=31 msm_rtb.filter=0x37 ehci-hcd.park=3 lpm_levels.sleep_disabled=1 sched_enable_hmp=1 sched_enable_power_aware=1 service_locator.enable=1
+BOARD_KERNEL_CMDLINE += androidboot.hardware=qcom user_debug=31 msm_rtb.filter=0x37 ehci-hcd.park=3 lpm_levels.sleep_disabled=1 sched_enable_hmp=1 sched_enable_power_aware=1 service_locator.enable=1 swiotlb=1
 endif
 
 BOARD_EGL_CFG := device/qcom/sdm660_32/egl.cfg
@@ -78,7 +95,9 @@ BOARD_KERNEL_PAGESIZE    := 4096
 BOARD_KERNEL_TAGS_OFFSET := 0x01E00000
 BOARD_RAMDISK_OFFSET     := 0x02000000
 
-TARGET_KERNEL_CROSS_COMPILE_PREFIX := $(PWD)/prebuilts/gcc/linux-x86/arm/arm-eabi-4.8/bin/arm-eabi-
+TARGET_KERNEL_ARCH := arm64
+TARGET_KERNEL_HEADER_ARCH := arm64
+TARGET_KERNEL_CROSS_COMPILE_PREFIX := aarch64-linux-android-
 TARGET_USES_UNCOMPRESSED_KERNEL := false
 
 
@@ -104,7 +123,7 @@ TARGET_COMPILE_WITH_MSM_KERNEL := true
 TARGET_PD_SERVICE_ENABLED := true
 
 #Enable HW based full disk encryption
-TARGET_HW_DISK_ENCRYPTION := true
+#TARGET_HW_DISK_ENCRYPTION := true
 
 TARGET_CRYPTFS_HW_PATH := device/qcom/common/cryptfs_hw
 
