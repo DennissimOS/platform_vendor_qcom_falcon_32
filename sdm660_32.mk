@@ -40,21 +40,10 @@ TARGET_USE_UI_SVA := true
 -include $(QCPATH)/common/config/qtic-config.mk
 
 # Video codec configuration files
-MEDIA_XML_TARGET := system/vendor/etc
-MEDIA_XML_TARGET_VENDOR := vendor/etc
-MEDIA_XML_TARGET_SYSTEM := etc
 ifeq ($(TARGET_ENABLE_QC_AV_ENHANCEMENTS), true)
-PRODUCT_COPY_FILES += device/qcom/sdm660_32/media_profiles.xml:$(MEDIA_XML_TARGET)/media_profiles.xml \
-                                          device/qcom/sdm660_32/media_profiles.xml:$(MEDIA_XML_TARGET_VENDOR)/media_profiles.xml \
-                                          device/qcom/sdm660_32/media_profiles.xml:$(MEDIA_XML_TARGET_SYSTEM)/media_profiles.xml
-
-PRODUCT_COPY_FILES += device/qcom/sdm660_32/media_codecs.xml:$(MEDIA_XML_TARGET)/media_codecs.xml \
-                                          device/qcom/sdm660_32/media_codecs.xml:$(MEDIA_XML_TARGET_VENDOR)/media_codecs.xml \
-                                          device/qcom/sdm660_32/media_codecs.xml:$(MEDIA_XML_TARGET_SYSTEM)/media_codecs.xml
-
-PRODUCT_COPY_FILES += device/qcom/sdm660_32/media_codecs_performance.xml:$(MEDIA_XML_TARGET)/media_codecs_performance.xml \
-                                          device/qcom/sdm660_32/media_codecs_performance.xml:$(MEDIA_XML_TARGET_VENDOR)/media_codecs_performance.xml \
-                                          device/qcom/sdm660_32/media_codecs_performance.xml:$(MEDIA_XML_TARGET_SYSTEM)/media_codecs_performance.xml
+PRODUCT_COPY_FILES += device/qcom/sdm660_32/media_profiles.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_profiles.xml
+PRODUCT_COPY_FILES += device/qcom/sdm660_32/media_codecs.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs.xml
+PRODUCT_COPY_FILES += device/qcom/sdm660_32/media_codecs_performance.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_performance.xml
 endif #TARGET_ENABLE_QC_AV_ENHANCEMENTS
 
 # video seccomp policy files
@@ -62,9 +51,9 @@ PRODUCT_COPY_FILES += \
     device/qcom/sdm660_32/seccomp/mediacodec-seccomp.policy:$(TARGET_COPY_OUT_VENDOR)/etc/seccomp_policy/mediacodec.policy \
     device/qcom/sdm660_32/seccomp/mediaextractor-seccomp.policy:$(TARGET_COPY_OUT_VENDOR)/etc/seccomp_policy/mediaextractor.policy
 
-PRODUCT_COPY_FILES += device/qcom/sdm660_32/whitelistedapps.xml:system/vendor/etc/whitelistedapps.xml \
-                      device/qcom/sdm660_32/gamedwhitelist.xml:system/vendor/etc/gamedwhitelist.xml \
-                      device/qcom/sdm660_32/appboosts.xml:system/vendor/etc/appboosts.xml
+PRODUCT_COPY_FILES += device/qcom/sdm660_32/whitelistedapps.xml:$(TARGET_COPY_OUT_VENDOR)/etc/whitelistedapps.xml \
+                      device/qcom/sdm660_32/gamedwhitelist.xml:$(TARGET_COPY_OUT_VENDOR)/etc/gamedwhitelist.xml \
+                      device/qcom/sdm660_32/appboosts.xml:$(TARGET_COPY_OUT_VENDOR)/etc/appboosts.xml
 
 ifneq ($(TARGET_DISABLE_DASH), true)
     PRODUCT_BOOT_JARS += qcmediaplayer
@@ -193,7 +182,7 @@ PRODUCT_COPY_FILES += \
     device/qcom/sdm660_32/init.qti.qseecomd.sh:system/bin/init.qti.qseecomd.sh
 
 # MSM IRQ Balancer configuration file
-PRODUCT_COPY_FILES += device/qcom/sdm660_32/msm_irqbalance.conf:system/vendor/etc/msm_irqbalance.conf
+PRODUCT_COPY_FILES += device/qcom/sdm660_32/msm_irqbalance.conf:$(TARGET_COPY_OUT_VENDOR)/etc/msm_irqbalance.conf
 
 # dm-verity configuration
 PRODUCT_SUPPORTS_VERITY := true
