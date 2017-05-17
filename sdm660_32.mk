@@ -69,7 +69,7 @@ $(call inherit-product, device/qcom/common/common.mk)
 PRODUCT_NAME := sdm660_32
 PRODUCT_DEVICE := sdm660_32
 PRODUCT_BRAND := Android
-PRODUCT_MODEL := sdm660 for arm64
+PRODUCT_MODEL := sdm660 for arm
 
 # default is nosdcard, S/W button enabled in resource
 PRODUCT_CHARACTERISTICS := nosdcard
