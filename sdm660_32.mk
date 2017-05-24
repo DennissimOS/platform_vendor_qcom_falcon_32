@@ -1,15 +1,8 @@
 TARGET_USES_AOSP := true
-TARGET_USES_AOSP_FOR_AUDIO := false
 TARGET_USES_QCOM_BSP := false
 
-ifeq ($(TARGET_USES_AOSP),true)
-  TARGET_ENABLE_QC_AV_ENHANCEMENTS := false
-  TARGET_DISABLE_DASH := true
-  TARGET_USES_QTIC := false
-else
+ifneq ($(TARGET_USES_AOSP),true)
   DEVICE_PACKAGE_OVERLAYS := device/qcom/sdm660_32/overlay
-  TARGET_ENABLE_QC_AV_ENHANCEMENTS := true
-  TARGET_USES_QTIC := true
 endif
 
 # Default vendor configuration.
@@ -22,6 +15,10 @@ endif
 ifeq ($(ENABLE_VENDOR_IMAGE), true)
 TARGET_USES_QTIC := false
 endif
+
+TARGET_USES_AOSP_FOR_AUDIO := false
+TARGET_ENABLE_QC_AV_ENHANCEMENTS := true
+TARGET_DISABLE_DASH := true
 
 TARGET_KERNEL_VERSION := 4.4
 BOARD_FRP_PARTITION_NAME := frp
@@ -153,6 +150,15 @@ PRODUCT_PACKAGES += \
     android.hardware.light@2.0-impl \
     android.hardware.light@2.0-service \
     android.hardware.configstore@1.0-service
+
+PRODUCT_PACKAGES += \
+    vendor.display.color@1.0-service \
+    vendor.display.color@1.0-impl
+
+# Vibrator
+PRODUCT_PACKAGES += \
+    android.hardware.vibrator@1.0-impl \
+    android.hardware.vibrator@1.0-service \
 
 # Camera configuration file. Shared by passthrough/binderized camera HAL
 PRODUCT_PACKAGES += camera.device@3.2-impl
