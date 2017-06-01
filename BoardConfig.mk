@@ -27,7 +27,6 @@ BOOTLOADER_GCC_VERSION := arm-eabi-4.8
 TARGET_USES_UEFI := true
 TARGET_NO_KERNEL := false
 -include $(QCPATH)/common/sdm660_32/BoardConfigVendor.mk
-MINIMAL_FONT_FOOTPRINT := true
 
 # Some framework code requires this to enable BT
 BOARD_HAVE_BLUETOOTH := true
