@@ -54,8 +54,8 @@ on fs
     restorecon_recursive /persist
 
 on post-fs
-    start qseecomd
-    exec - root root root -- /system/bin/init.qti.qseecomd.sh
+    start vendor.qseecomd
+    exec - system system -- /vendor/bin/init.qti.qseecomd.sh
     write /dev/ipa 1
 
 on init
@@ -151,7 +151,7 @@ on property:sys.shutdown.requested=*
 #on property:sys.boot_completed=1
 #    start qrngp
 #
-service qseecomd /vendor/bin/qseecomd
+service vendor.qseecomd /vendor/bin/qseecomd
    class core
    user root
    group root
